@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    button {
+        @apply p-2 bg-gray-200 rounded-2xl m-4 
+    }
+}
+
+@media (max-width: 600px) {
+    .App {
+        transform: scale(0.5)
+    }
+}
