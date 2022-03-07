@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react"
 export default function Board({ board, handleBoxClick }) {
     let canvas
 
-    let mini = (window.innerWidth < 600)
+    let mini = (window.innerWidth <= 600)
 
     const divider = 500 / board.length
 
