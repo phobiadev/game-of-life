@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import stepOneGeneration from "./gameOfLife"
 import configurations from "./configurations"
 import Board from "./components/Board"
+import playButton from "./images/playButton.png"
+import pauseButton from "./images/pauseButton.png"
 
 function saveLayout(board) {
   let solids = []
@@ -13,7 +15,6 @@ function saveLayout(board) {
     }
   }
   navigator.clipboard.writeText(`[${solids}]`)
-  alert("copied")
 }
 
 function fillBoard(rows,cols, randomised) {
@@ -41,6 +42,12 @@ export default function App() {
   const [board, setBoard] = useState(fillBoard(rows,cols,true))
   const [playing, setPlaying] = useState(false)
   
+  useEffect(() => {
+    window.addEventListener("copy",() => {
+      saveLayout(board)
+    })
+  }, [board])
+
 
   function handleBoxClick(row,col) {
     let copyBoard = board.slice()
@@ -75,34 +82,35 @@ export default function App() {
       if (playing) {
         setBoard(board => stepOneGeneration(board))
       }
-    },(200/(speed+1))+8)
+    },(101-(speed))*3)
 
     return () => clearInterval(interval)
   },[playing,speed])
 
+
+  
 
 
   return (
     <div className="App">
 
       <div className="flex justify-center items-center m-2">
-        <button onClick={() => saveLayout(board)}>(debug) copy layout</button>
         <button onClick={() => {setBoard(fillBoard(rows,cols,true)); setPlaying(false)}}>Randomise</button>
         <button onClick={() => {setBoard(fillBoard(rows,cols,false)); setPlaying(false)}}>Clear</button>
         <button onClick={() => setBoard(stepOneGeneration(board))}>step</button>
-        <button onClick={() => setPlaying(!playing)}>{playing ? "stop" : "start"}</button>
-
-        <select onInput={event => setLayout(event.target.value)}>
+        <button onClick={() => setPlaying(!playing)}><img src={playing ? pauseButton: playButton} width={12}/></button>
+    
+        <select onInput={event => setLayout(JSON.parse(event.target.value))}>
           {configurations.map(configuration => {
             return (
-              <option value={configuration.layout}>{configuration.name}</option>
+              <option value={JSON.stringify(configuration.layout)}>{configuration.name}</option>
             )
           })}
         </select>
       </div>
 
       <div className="flex justify-center">
-        <Board board={board} handleBoxClick={handleBoxClick}/>      
+        <Board id="board" onCopy={() => saveLayout(board)} board={board} handleBoxClick={handleBoxClick}/>      
       </div>
 
       <div className="flex justify-center mt-[20px]">
@@ -111,10 +119,14 @@ export default function App() {
         <p className="ml-16">Speed: {speed}</p>
       </div>
 
-      <div className="flex justify-center space-x-8">
-          <input type="range" min={30} max={80} step={10} onInput={event => handleResize(event.target.value,cols)} value={rows} onChange={event => handleResize(event.target.value,cols)}/>
-          <input type="range" min={30} max={80} step={10} onInput={event => handleResize(rows,event.target.value)} value={cols} onChange={event => handleResize(rows,event.target.value)}/>
+      <div className="flex justify-center">
+        <div className="flex space-x-4 p-2 bg-gray-100 border-gray-200 border-[3px] rounded-full">
+          <input type="range" min={window.innerWidth <= 600 ? 55 : 30} max={80} step={5} onInput={event => handleResize(event.target.value,cols)} value={rows} onChange={event => handleResize(event.target.value,cols)}/>
+          
+          <input type="range" min={30} max={80} step={5} onInput={event => handleResize(rows,event.target.value)} value={cols} onChange={event => handleResize(rows,event.target.value)}/>
+          
           <input type="range" min={0} max={100} step={10} onInput={event => setSpeed(event.target.value)} value={speed} onChange={event => setSpeed(event.target.value)}/>
+        </div>
       </div>
       
     </div>
