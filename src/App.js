@@ -49,28 +49,18 @@ export default function App() {
   }
 
 
-  function setLayout(layoutName) {
-    let layout
+  function setLayout(layout) {
+    let newBoard = fillBoard(rows,cols,false)
 
-    for (let config of configurations) {
-      if (config.name == layoutName) {
-
-        layout = config.layout
-        console.log(layout)
-
-        let newBoard = fillBoard(rows,cols,false)
-
-        for (let item of layout) {
-          if (item[0] >= rows || item[1] >= cols) {
-            alert("this configuration is too large for the current board")
-            return
-          }
-          newBoard[item[0]][item[1]] = 1
-        }
-        setBoard(newBoard)
+    for (let item of layout) {
+      if (item[0] >= rows || item[1] >= cols) {
+        alert("this configuration is too large for the current board")
+        return
       }
-    } 
-  }
+      newBoard[item[0]][item[1]] = 1
+      }
+      setBoard(newBoard)
+      }
 
 
   function handleResize(rows,cols) {
@@ -105,10 +95,9 @@ export default function App() {
         <select onInput={event => setLayout(event.target.value)}>
           {configurations.map(configuration => {
             return (
-              <option value={configuration.name}>{configuration.name}</option>
+              <option value={configuration.layout}>{configuration.name}</option>
             )
           })}
-          <option value="not real">test</option>
         </select>
       </div>
 

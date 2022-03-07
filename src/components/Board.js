@@ -31,12 +31,12 @@ export default function Board({ board, handleBoxClick }) {
             onClick={event => {
             var rect = canvas.getBoundingClientRect();
 
-            var x = Math.floor((event.clientX - rect.left) / (divider));
+            var x = Math.round((event.clientX - rect.left) / (divider))-1;
             if (x >= board[0].length) {
                 x = board[0].length - 1
             }
 
-            var y = Math.floor((event.clientY - rect.top) / (divider));
+            var y = Math.round((event.clientY - rect.top) / (divider))-1;
             if (y >= board.length) {
                 y = board.length - 1
             }
