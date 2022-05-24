@@ -20,6 +20,6 @@ canvas {
 
 @media (max-width: 600px) {
     .App {
-        transform: scale(0.5)
+        zoom: 50% 
     }
 }
